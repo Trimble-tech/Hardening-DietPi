@@ -5,7 +5,7 @@ This Bash script runs on [DietPi](https://dietpi.com/) systems to provide securi
 ### Prerequisites
 
 1. An installed instance of DietPi Linux.
-2. If you decide to harden SSH (the option is given at runtime), you must have SSH keys setup on the server. Check out my script SSH-key-builder if you need help with that. **(Add link)**
+2. If you decide to harden SSH (the option is given at runtime), you must have SSH keys setup on the server. Check out my script SSH-key-builder if you need help with that. **(https://github.com/Trimble-tech/SSH-Key-Builder)**
 
 ### Usage
 
