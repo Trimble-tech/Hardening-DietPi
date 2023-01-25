@@ -25,4 +25,4 @@ This Bash script runs on [DietPi](https://dietpi.com/) systems to provide securi
 
 ### License
 
-**Hardening DietPi** is licensed by Chris Trimble under the GPL v3 Open Source license (2023). Refer to file "LICENSE.md" for more information.
+**Hardening DietPi** is licensed by Chris Trimble under the GPL v3 Open Source license (2023). Refer to file "LICENSE" for more information.
