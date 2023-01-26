@@ -70,7 +70,7 @@ while true; do
                 ##Higher number in name loads in apt later & overwrites lower number (1-99)
                 ##97-99 is taken by DietPi, picking 95 to prevent our options getting overwritten by defaults (70 & lower)
                 echo '//Hardening-Dietpi Config;;' > ~/95-Hardening-Dietpi-Config
-ice
+
                 ##These changes made are to keep systems light; extra dependencies/old kernels can bog down a MicroSD or small USB
                 echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";;' >> ~/95-Hardening-Dietpi-Config
                 echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";;' >> ~/95-Hardening-Dietpi-Config
