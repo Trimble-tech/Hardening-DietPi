@@ -1,8 +1,6 @@
 #   --Chris Trimble GNU GPLv3 2023--
-
 ##This script is written to be easy/forgiving for novices but tweakable for advanced users.
-##While all code should be desirable in current state, advanced options can be further tweaked looking at comments in code + README.txt
-##All this prevents too many questions being asked at runtime.
+##For further information, refer to README.md and comments in this code
 
 echo "Hello."
 echo "This script will tweak Dietpi for better security."
@@ -57,7 +55,7 @@ while true; do
 
                 ##This change slows updates a bit but protects Apt in power failure/allows user shutdown
                 sudo echo 'Unattended-Upgrade::MinimalSteps "true";;' >> ~/95-Hardening-Dietpi-Config
-
+                ##Can't create the file directly in /etc/apt/apt.conf (permissions), so creating and then moving
                 sudo mv ~/95-Hardening-Dietpi-Config /etc/apt/apt.conf.d/
 
                 echo "Automatic Upgrades are now enabled"
