@@ -49,14 +49,14 @@ while true; do
                 ##Instead of editing the existing config, load our changes on top with custom file 
                 ##Higher number in name loads in apt later & overwrites lower number (1-99)
                 ##97-99 is taken by DietPi, picking 95 to prevent our options getting overwritten by defaults (70 & lower)
-                sudo echo '//Hardening-Dietpi Config' > ~/95-Hardening-Dietpi-Config
+                sudo echo '//Hardening-Dietpi Config;;' > ~/95-Hardening-Dietpi-Config
 
                 ##These changes made are to keep systems light; extra dependencies/old kernels can bog down a MicroSD or small USB
-                sudo echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true"' >> ~/95-Hardening-Dietpi-Config
-                sudo echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true"' >> ~/95-Hardening-Dietpi-Config
+                sudo echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";;' >> ~/95-Hardening-Dietpi-Config
+                sudo echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";;' >> ~/95-Hardening-Dietpi-Config
 
                 ##This change slows updates a bit but protects Apt in power failure/allows user shutdown
-                sudo echo 'Unattended-Upgrade::MinimalSteps "true"' >> ~/95-Hardening-Dietpi-Config
+                sudo echo 'Unattended-Upgrade::MinimalSteps "true";;' >> ~/95-Hardening-Dietpi-Config
 
                 sudo mv ~/95-Hardening-Dietpi-Config /etc/apt/apt.conf.d/
 
@@ -69,28 +69,28 @@ while true; do
                 ##Instead of editing the existing config, load our changes on top with custom file 
                 ##Higher number in name loads in apt later & overwrites lower number (1-99)
                 ##97-99 is taken by DietPi, picking 95 to prevent our options getting overwritten by defaults (70 & lower)
-                echo '//Hardening-Dietpi Config' > ~/95-Hardening-Dietpi-Config ##Always starts with a new file in case the script runs twice
-
+                echo '//Hardening-Dietpi Config;;' > ~/95-Hardening-Dietpi-Config
+ice
                 ##These changes made are to keep systems light; extra dependencies/old kernels can bog down a MicroSD or small USB
-                echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true"' >> ~/95-Hardening-Dietpi-Config
-                echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true"' >> ~/95-Hardening-Dietpi-Config
+                echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";;' >> ~/95-Hardening-Dietpi-Config
+                echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";;' >> ~/95-Hardening-Dietpi-Config
 
                 ##This change slows updates a bit but protects Apt/lets system shutdown properly
-                echo 'Unattended-Upgrade::MinimalSteps "true"' >> ~/95-Hardening-Dietpi-Config
+                echo 'Unattended-Upgrade::MinimalSteps "true";;' >> ~/95-Hardening-Dietpi-Config
 
                 ##This section creates another file which enables the automatic reboots
                 ##Simply delete this file if you don't want auto-reboots anymore
-                echo '//Hardening-Dietpi-Reboots' > ~/96-Hardening-Dietpi-Reboots ##Always starts with a new file in case the script runs twice
+                echo '//Hardening-Dietpi-Reboots;;' > ~/96-Hardening-Dietpi-Reboots
                 
                 ##Turns on automatic reboots, which occur only:
                     #[1] If upgraded packages inform Apt of a need to reboot by creating file '/var/run/reboot-required' temporarily.
                     #[2] At the time specified in the file '96-Hardening-Dietpi-Reboots' (set to 2AM by script default).
 
-                echo 'Unattended-Upgrade::Automatic-Reboot "true"/' >> ~/96-Hardening-Dietpi-Reboots
+                echo 'Unattended-Upgrade::Automatic-Reboot "true";;' >> ~/96-Hardening-Dietpi-Reboots
                 ##Servers are likely to have at least one (maybe automated) user logged in, this makes sure the reboot still occurs.
-                echo 'Unattended-Upgrade::Automatic-Reboot-WithUsers "true"' >> ~/96-Hardening-Dietpi-Reboots
+                echo 'Unattended-Upgrade::Automatic-Reboot-WithUsers "true";;' >> ~/96-Hardening-Dietpi-Reboots
                 ##Unlikely to cause disruption if reboot is at 02:00 (2AM local time)
-                echo 'Unattended-Upgrade::Automatic-Reboot-Time "02:00"' >> ~/96-Hardening-Dietpi-Reboots
+                echo 'Unattended-Upgrade::Automatic-Reboot-Time "02:00";;' >> ~/96-Hardening-Dietpi-Reboots
 
                 ##Can't create the file directly in /etc/apt/apt.conf (permissions), so creating and then moving
                 sudo mv ~/95-Hardening-Dietpi-Config /etc/apt/apt.conf.d/
