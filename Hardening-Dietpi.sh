@@ -23,14 +23,28 @@ echo "  needrestart"
 echo "  debsecan"
 echo "  debsums"
 echo "  fail2ban"
-##I actually need to also check that apt-utils and sed are installed.
-    #1 apt-utils is needed to configure packages after install, apt complains otherwise
-    #2 sed is usually preinstalled but critical for this script to work
 
 while true; do
     read -p "Do you want to install these tools? [Y/N] " yn
         case $yn in
-        [Yy]* ) echo "Installing..." && sudo apt install libpam-tmpdir apt-listbugs apt-listchanges needrestart debsecan debsums sed fail2ban apt-utils -y && echo "Complete." && break;;
+        [Yy]* ) echo "Installing..." && sudo apt install libpam-tmpdir needrestart debsecan debsums sed fail2ban apt-utils -y && echo "Complete." && break;;
+        [Nn]* ) echo 'Not Installing packages.' && break;;
+        * ) echo 'Yes or No?' ;;
+    esac
+done
+
+##These tools are good for bug finding security info;
+##however, prompts can occur occassionally that block DietPi-Software from installing things.
+##This can be mitigated by running some of the installer in a root subscript, but most may not want to.
+##Therefore, the install of these tools is seperated.
+echo "These apt tools can help find bugs in code, but also may block automated installers like 'DietPi-Software' if a bug is found:"
+echo "  apt-listbugs"
+echo "  apt-listchanges"
+
+while true; do
+    read -p "Do you want to install these Apt tools? [Y/N] " yn
+        case $yn in
+        [Yy]* ) echo "Installing..." && sudo apt install apt-listbugs apt-listchanges -y && echo "Complete." && break;;
         [Nn]* ) echo 'Not Installing packages.' && break;;
         * ) echo 'Yes or No?' ;;
     esac
