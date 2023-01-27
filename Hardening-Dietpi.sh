@@ -37,7 +37,8 @@ done
 ##however, prompts can occur occassionally that block DietPi-Software from installing things.
 ##This can be mitigated by running some of the installer in a root subscript, but most may not want to.
 ##Therefore, the install of these tools is seperated.
-echo "These apt tools can help find bugs in code, but also may block automated installers like 'DietPi-Software' if a bug is found:"
+echo "These apt tools can help find bugs in code," 
+echo " but also may block automated installers like 'DietPi-Software' if a bug is found:"
 echo "  apt-listbugs"
 echo "  apt-listchanges"
 
