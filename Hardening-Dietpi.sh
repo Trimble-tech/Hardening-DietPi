@@ -5,13 +5,12 @@
 echo "Hello."
 echo "This script will tweak Dietpi for better security."
 echo "If you have questions, please refer to README.txt or email me at:"
-echo "  chris.trimble3.ct@gmail.com"
+echo "chris.trimble3.ct@gmail.com"
+echo "---"
 sleep 2
-##Need to check for + remove old files if script was ran before, otherwise syntax errors occur
+##Need to check for + remove old files if script was ran before
     ##Provides some reset if minds change
 echo "Checking for old config files..."
-sudo rm /etc/apt/apt.conf.d/95-Hardening-Dietpi-Config
-sudo rm /etc/apt/apt.conf.d/96-Hardening-Dietpi-Reboots
 sudo rm /etc/modprobe.d/disable-rds.conf
 sudo rm /etc/modprobe.d/disable-sctp.conf
 
@@ -27,8 +26,14 @@ echo "  fail2ban"
 while true; do
     read -p "Do you want to install these tools? [Y/N] " yn
         case $yn in
-        [Yy]* ) echo "Installing..." && sudo apt install libpam-tmpdir needrestart debsecan debsums sed fail2ban apt-utils -y && echo "Complete." && break;;
+        [Yy]* ) 
+                echo "Installing..."
+                sudo apt install libpam-tmpdir needrestart debsecan debsums sed fail2ban apt-utils -y
+                echo "Complete." 
+                break ;;
+
         [Nn]* ) echo 'Not Installing packages.' && break;;
+
         * ) echo 'Yes or No?' ;;
     esac
 done
@@ -45,78 +50,32 @@ echo "  apt-listchanges"
 while true; do
     read -p "Do you want to install these Apt tools? [Y/N] " yn
         case $yn in
-        [Yy]* ) echo "Installing..." && sudo apt install apt-listbugs apt-listchanges -y && echo "Complete." && break;;
+        [Yy]* ) 
+                echo "Installing..."
+                sudo apt install apt-listbugs apt-listchanges -y 
+                echo "Complete." 
+                break ;;
+
         [Nn]* ) echo 'Not Installing packages.' && break;;
+
         * ) echo 'Yes or No?' ;;
     esac
 done
 
-##Allows auto-updates &/or reboots to be enabled with custom config
-echo 'a selects auto upgrades, b selects auto upgrades and reboots, c does nothing.'
+##Replaced unattended-upgrades with DietPi specific tool enabled in boot config file.
+##May require reboot to take effect
 while true; do
-    read -p "Would you like to enable Automatic Upgrades (a), Automatic Upgrades with Reboots (b), or only upgrade manually [no automation] (c)?" abc
-        case $abc in
-            [a]* ) 
-                echo "Enabling Automatic Upgrades."
-                sudo apt install unattended-upgrades apt-listchanges apt-utils -y
-                ##Instead of editing the existing config, load our changes on top with custom file 
-                ##Higher number in name loads in apt later & overwrites lower number (1-99)
-                ##97-99 is taken by DietPi, picking 95 to prevent our options getting overwritten by defaults (70 & lower)
-                sudo echo '//Hardening-Dietpi Config;;' > ~/95-Hardening-Dietpi-Config
+    read -p "Do you want to enable automatic updates? [Y/N] " yn
+        case $yn in
+        [Yy]* ) 
+                echo "Enabling automatic updates..." 
+                sudo G_CONFIG_INJECT 'CONFIG_CHECK_APT_UPDATES=' 'CONFIG_CHECK_APT_UPDATES=2' /boot/dietpi.txt 
+                echo "Complete." 
+                break ;;
 
-                ##These changes made are to keep systems light; extra dependencies/old kernels can bog down a MicroSD or small USB
-                sudo echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";;' >> ~/95-Hardening-Dietpi-Config
-                sudo echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";;' >> ~/95-Hardening-Dietpi-Config
+        [Nn]* ) echo "Not enabling automatic updates." && break;;
 
-                ##This change slows updates a bit but protects Apt in power failure/allows user shutdown
-                sudo echo 'Unattended-Upgrade::MinimalSteps "true";;' >> ~/95-Hardening-Dietpi-Config
-                ##Can't create the file directly in /etc/apt/apt.conf (permissions), so creating and then moving
-                sudo mv ~/95-Hardening-Dietpi-Config /etc/apt/apt.conf.d/
-
-                echo "Automatic Upgrades are now enabled"
-                break;;
-            
-            [b]* ) 
-                echo "Enabling Automatic Upgrades and Automatic Reboots."
-                sudo apt install unattended-upgrades apt-listchanges -y
-                ##Instead of editing the existing config, load our changes on top with custom file 
-                ##Higher number in name loads in apt later & overwrites lower number (1-99)
-                ##97-99 is taken by DietPi, picking 95 to prevent our options getting overwritten by defaults (70 & lower)
-                echo '//Hardening-Dietpi Config;;' > ~/95-Hardening-Dietpi-Config
-
-                ##These changes made are to keep systems light; extra dependencies/old kernels can bog down a MicroSD or small USB
-                echo 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";;' >> ~/95-Hardening-Dietpi-Config
-                echo 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";;' >> ~/95-Hardening-Dietpi-Config
-
-                ##This change slows updates a bit but protects Apt/lets system shutdown properly
-                echo 'Unattended-Upgrade::MinimalSteps "true";;' >> ~/95-Hardening-Dietpi-Config
-
-                ##This section creates another file which enables the automatic reboots
-                ##Simply delete this file if you don't want auto-reboots anymore
-                echo '//Hardening-Dietpi-Reboots;;' > ~/96-Hardening-Dietpi-Reboots
-                
-                ##Turns on automatic reboots, which occur only:
-                    #[1] If upgraded packages inform Apt of a need to reboot by creating file '/var/run/reboot-required' temporarily.
-                    #[2] At the time specified in the file '96-Hardening-Dietpi-Reboots' (set to 2AM by script default).
-
-                echo 'Unattended-Upgrade::Automatic-Reboot "true";;' >> ~/96-Hardening-Dietpi-Reboots
-                ##Servers are likely to have at least one (maybe automated) user logged in, this makes sure the reboot still occurs.
-                echo 'Unattended-Upgrade::Automatic-Reboot-WithUsers "true";;' >> ~/96-Hardening-Dietpi-Reboots
-                ##Unlikely to cause disruption if reboot is at 02:00 (2AM local time)
-                echo 'Unattended-Upgrade::Automatic-Reboot-Time "02:00";;' >> ~/96-Hardening-Dietpi-Reboots
-
-                ##Can't create the file directly in /etc/apt/apt.conf (permissions), so creating and then moving
-                sudo mv ~/95-Hardening-Dietpi-Config /etc/apt/apt.conf.d/
-                sudo mv ~/96-Hardening-Dietpi-Reboots /etc/apt/apt.conf.d/
-
-                echo "Automatic Upgrades and Reboots are now enabled"
-                break;;
-        
-            [c]* ) 
-                echo 'Not enabling automatic updates or reboots.'
-                break;;
-            
-            * ) echo ' ' && echo 'a selects auto upgrades, b selects auto upgrades and reboots, c does nothing.' && echo 'Choose a, b, or c';;
+        * ) echo 'Yes or No?' ;;
     esac
 done
 
@@ -125,8 +84,15 @@ done
 while true; do
     read -p "Do you want to disable RDS (Reliable Datagram Sockets) [Y/N] ?" yn
         case $yn in
-        [Yy]* ) echo "Disabling RDS..." && echo 'install rds /bin/true' >> ~/disable-rds.conf && sudo mv ~/disable-rds.conf /etc/modprobe.d/ && echo "Complete." && break;;
+        [Yy]* ) 
+                echo "Disabling RDS..." 
+                echo 'install rds /bin/true' >> ~/disable-rds.conf 
+                sudo mv ~/disable-rds.conf /etc/modprobe.d/ 
+                echo "Complete."
+                break ;;
+
         [Nn]* ) echo "Leaving enabled." && break;;
+
         * ) echo 'Yes or No?' ;;
     esac
 done
@@ -134,8 +100,15 @@ done
 while true; do
     read -p "Do you want to disable SCTP (Stream Control Transmission Protocol) [Y/N] ?" yn
         case $yn in
-        [Yy]* ) echo "Disabling SCTP..." && echo 'install sctp /bin/true' >> ~/disable-sctp.conf && sudo mv ~/disable-sctp.conf /etc/modprobe.d/ && echo "Complete." && break;;
+        [Yy]* ) 
+                echo "Disabling SCTP..." 
+                echo 'install sctp /bin/true' >> ~/disable-sctp.conf 
+                sudo mv ~/disable-sctp.conf /etc/modprobe.d/ 
+                echo "Complete." 
+                break ;;
+
         [Nn]* ) echo "Leaving enabled." && break;;
+
         * ) echo 'Yes or No?' ;;
     esac
 done
@@ -148,7 +121,13 @@ while true; do
     read -p "Do you have SSH keys? [Y/N] " yn
     case $yn in
         [Yy]* ) echo "Okay, let's put them to use." && break;;
-        [Nn]* ) echo "You will need SSH keys to fully secure SSH." && echo "Check out SSH-Key-Builder and then run this script again (https://github.com/Trimble-tech/SSH-Key-Builder)." && exit; break;;
+
+        [Nn]* ) 
+                echo "You will need SSH keys to fully secure SSH."
+                echo "Check out SSH-Key-Builder and then run this script again (https://github.com/Trimble-tech/SSH-Key-Builder)." 
+                exit ; 
+                break ;;
+
         * ) echo 'Yes or No?' ;;
     esac
 done
@@ -156,15 +135,14 @@ done
 echo "Hardening SSH service..."
 ##Make backups of files before making changes
 ##I iterate this verbally in script, since users may have issues with config/want peace of mind in headless (no display) setups.
-    ##cp isn't letting me copy to a new file, odd...
     touch sshd_config-OLD
     touch dietpi.OLD
-    cp /etc/ssh/sshd_config sshd_config-OLD
-    cp /etc/ssh/sshd_config.d/dietpi.conf dietpi.OLD
+    cp /etc/ssh/sshd_config /home/dietpi/sshd_config-OLD
+    cp /etc/ssh/sshd_config.d/dietpi.conf /home/dietpi/dietpi.OLD
     echo "Original SSH file copied to sshd_config-OLD" ##Backups can't be in /etc/ssh because it makes apt/SSH errors
     echo "Dietpi SSH file copied to dietpi.OLD"
     echo ' '
-    ls
+    echo "/home/dietpi/" && ls /home/dietpi
     echo ' '
     echo "To reverse changes copy these files over the originals."
     echo "Original SSH file is /etc/ssh/sshd_config"
@@ -199,10 +177,23 @@ echo "Some of these actions may require restarting services to take full effect.
 while true; do
     read -p "Do you want to Reboot your system, go to Dietpi-services, or Nothing else? [R/D/N] " rdn
     case $rdn in
-        [Rr]* ) echo "Rebooting system, Goodbye!" && sudo reboot && exit; break;;
-        ##Launching dietpi-services non-interactively only works in the /boot/dietpi directory.
-        [Dd]* ) echo "Entering Dietpi-Services..." && cd /boot/dietpi && sudo ./dietpi-services && cd && exit; break;;
-        [Nn]* ) echo "Exiting, do not forget to reboot/restart services when possible." && exit; break;;
+        [Rr]* ) ##Launching dietpi-services non-interactively only works in the /boot/dietpi directory.
+                echo "Rebooting system, Goodbye!" 
+                sudo reboot 
+                exit ; 
+                break ;;
+        
+        [Dd]* ) 
+                echo "Entering Dietpi-Services..." 
+                sudo /boot/dietpi/dietpi-services
+                exit ; 
+                break ;;
+
+        [Nn]* ) 
+                echo "Exiting, do not forget to reboot/restart services when possible." 
+                exit ; 
+                break ;;
+
         * ) echo "R will reboot, D will go to Dietpi-services, and N will do nothing."
     esac
 done
