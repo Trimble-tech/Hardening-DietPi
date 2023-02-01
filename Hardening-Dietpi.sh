@@ -73,7 +73,7 @@ while true; do
                 echo "Original boot file backup is in '~/backups'."
                 ls ~/backups/
 
-                ##Replaces blank field with auto updates
+                ##Enables auto update in /boot/dietpi.txt
                 sudo sed -i 's/CONFIG_CHECK_APT_UPDATES=.*/CONFIG_CHECK_APT_UPDATES=2/g' /boot/dietpi.txt
                 echo "Complete." 
                 break ;;
