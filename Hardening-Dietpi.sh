@@ -4,7 +4,7 @@
 
 echo "Hello."
 echo "This script will tweak Dietpi for better security."
-echo "If you have questions, please refer to README.txt or email me at:"
+echo "If you have questions, please refer to README.md or email me at:"
 echo "chris.trimble3.ct@gmail.com"
 echo "---"
 sleep 2
@@ -16,8 +16,6 @@ sudo rm /etc/modprobe.d/disable-sctp.conf
 
 echo "Security Audits like Lynis often request tools like these to be installed for security:"
 echo "  libpam-tmpdir"
-echo "  apt-listbugs"
-echo "  apt-listchanges"
 echo "  needrestart"
 echo "  debsecan"
 echo "  debsums"
@@ -69,7 +67,14 @@ while true; do
         case $yn in
         [Yy]* ) 
                 echo "Enabling automatic updates..." 
-                sudo G_CONFIG_INJECT 'CONFIG_CHECK_APT_UPDATES=' 'CONFIG_CHECK_APT_UPDATES=2' /boot/dietpi.txt 
+                ##No harm in being careful...
+                mkdir ~/backups
+                cp /boot/dietpi.txt ~/backups/dietpi.txt
+                echo "Original boot file backup is in '~/backups'."
+                ls ~/backups/
+
+                ##Replaces blank field with auto updates
+                sudo sed -i 's/CONFIG_CHECK_APT_UPDATES=.*/CONFIG_CHECK_APT_UPDATES=2/g' /boot/dietpi.txt
                 echo "Complete." 
                 break ;;
 
@@ -135,14 +140,15 @@ done
 echo "Hardening SSH service..."
 ##Make backups of files before making changes
 ##I iterate this verbally in script, since users may have issues with config/want peace of mind in headless (no display) setups.
-    touch sshd_config-OLD
-    touch dietpi.OLD
-    cp /etc/ssh/sshd_config /home/dietpi/sshd_config-OLD
-    cp /etc/ssh/sshd_config.d/dietpi.conf /home/dietpi/dietpi.OLD
+    mkdir ~/backups
+    touch ~/backups/sshd_config-OLD
+    touch ~/backups/dietpi.OLD
+    cp /etc/ssh/sshd_config ~/backups/sshd_config-OLD
+    cp /etc/ssh/sshd_config.d/dietpi.conf ~/backups/dietpi.OLD
     echo "Original SSH file copied to sshd_config-OLD" ##Backups can't be in /etc/ssh because it makes apt/SSH errors
     echo "Dietpi SSH file copied to dietpi.OLD"
     echo ' '
-    echo "/home/dietpi/" && ls /home/dietpi
+    echo "Contents of '~/backups':" && ls ~/backups
     echo ' '
     echo "To reverse changes copy these files over the originals."
     echo "Original SSH file is /etc/ssh/sshd_config"
