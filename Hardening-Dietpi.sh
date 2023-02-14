@@ -19,14 +19,13 @@ echo "  libpam-tmpdir"
 echo "  needrestart"
 echo "  debsecan"
 echo "  debsums"
-echo "  fail2ban"
 
 while true; do
     read -p "Do you want to install these tools? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Installing..."
-                sudo apt install libpam-tmpdir needrestart debsecan debsums sed fail2ban apt-utils -y
+                sudo apt install libpam-tmpdir needrestart debsecan debsums sed apt-utils -y
                 echo "Complete." 
                 break ;;
 
@@ -36,29 +35,25 @@ while true; do
     esac
 done
 
-##These tools are good for bug finding security info;
-##however, prompts can occur occassionally that block DietPi-Software from installing things.
-##This can be mitigated by running some of the installer in a root subscript, but most may not want to.
-##Therefore, the install of these tools is seperated.
-echo "These apt tools can help find bugs in code," 
-echo " but also may block automated installers like 'DietPi-Software' if a bug is found:"
-echo "  apt-listbugs"
-echo "  apt-listchanges"
-
 while true; do
-    read -p "Do you want to install these Apt tools? [Y/N] " yn
+    read -p "Do you want to install these Fail2Ban? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Installing..."
-                sudo apt install apt-listbugs apt-listchanges -y 
+                ##Fail2Ban on DietPi seems to not always work when installed manually
+                ##Install with DietPi-Software works well, so invoking DietPi-Software
+                sudo /boot/dietpi/dietpi-software install 73
                 echo "Complete." 
                 break ;;
 
-        [Nn]* ) echo 'Not Installing packages.' && break;;
+        [Nn]* ) echo 'Not Installing Fail2Ban.' && break;;
 
         * ) echo 'Yes or No?' ;;
     esac
 done
+
+##Removed option to install apt-listbugs and apt-listchanges
+##Installing only created problems for DietPi tools.
 
 ##Replaced unattended-upgrades with DietPi specific tool enabled in boot config file.
 ##May require reboot to take effect
