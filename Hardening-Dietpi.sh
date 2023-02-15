@@ -82,7 +82,7 @@ done
 ##Pointing to /bin/true disables services by not loading them in kernel (requires reboot)
 ##Delete created files to restore functionality 
 while true; do
-    read -p "Do you want to disable RDS (Reliable Datagram Sockets) [Y/N] ?" yn
+    read -p "Do you want to disable RDS (Reliable Datagram Sockets)? [Y/N]" yn
         case $yn in
         [Yy]* ) 
                 echo "Disabling RDS..." 
@@ -98,7 +98,7 @@ while true; do
 done
 
 while true; do
-    read -p "Do you want to disable SCTP (Stream Control Transmission Protocol) [Y/N] ?" yn
+    read -p "Do you want to disable SCTP (Stream Control Transmission Protocol)? [Y/N]" yn
         case $yn in
         [Yy]* ) 
                 echo "Disabling SCTP..." 
