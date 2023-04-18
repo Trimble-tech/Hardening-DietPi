@@ -19,6 +19,8 @@ echo "  libpam-tmpdir"
 echo "  needrestart"
 echo "  debsecan"
 echo "  debsums"
+echo "  apt-utils"
+echo "  sed"
 
 while true; do
     read -p "Do you want to install these tools? [Y/N] " yn
