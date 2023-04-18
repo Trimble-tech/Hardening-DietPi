@@ -13,7 +13,7 @@ This Bash script runs on [DietPi](https://dietpi.com/) systems to provide securi
 
 * Most may prefer to download to a laptop or desktop, then move it over with a tool like [SCP](https://www.redhat.com/sysadmin/secure-file-transfer-scp-sftp): 
   1. If you are using Dropbear (the default) SSH server, you need to install *openssh-client* for SCP to work (**sudo apt install openssh-client**). This includes an SCP binary Dropbear doesn't ship. If you use OpenSSH as the server, SCP is included.
-  2. Copy the script with SCP using: **scp Hardening-Dietpi.sh dietpi@your-server-IP-address**
+  2. Copy the script with SCP using: **scp Hardening-Dietpi.sh dietpi@your-server-IP-address:/home/dietpi/**
 
 ##### Make the script executable:
 
