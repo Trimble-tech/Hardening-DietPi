@@ -60,7 +60,7 @@ done
 ##Replaced unattended-upgrades with DietPi specific tool enabled in boot config file.
 ##May require reboot to take effect
 while true; do
-    read -p "Do you want to enable automatic updates? [Y/N] " yn
+    read -p "Do you want to enable automatic system updates? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Enabling automatic updates..." 
