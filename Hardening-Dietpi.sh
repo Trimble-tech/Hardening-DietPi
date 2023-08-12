@@ -208,7 +208,6 @@ while true; do
                     ##Other lines would get modded otherwise
                 sudo sed -i 's/^DROPBEAR_EXTRA_ARGS=""/DROPBEAR_EXTRA_ARGS=" -g -s "/g' /etc/default/dropbear
 
-                ##sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
                 break;;
         * ) echo 'Yes or No?' ;;
     esac
