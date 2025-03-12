@@ -1,4 +1,4 @@
-#   --Chris Trimble GNU GPLv3 2023--
+#   --Chris Trimble GNU GPLv3 2025--
 ##This script is written to be easy/forgiving for novices but tweakable for advanced users.
 ##For further information, refer to README.md and comments in this code
 
@@ -23,7 +23,7 @@ echo "  apt-utils"
 echo "  sed"
 
 while true; do
-    read -p "Do you want to install these tools? [Y/N] " yn
+    read -r -p "Do you want to install these tools? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Installing..."
@@ -38,7 +38,7 @@ while true; do
 done
 
 while true; do
-    read -p "Do you want to install these Fail2Ban? [Y/N] " yn
+    read -r -p "Do you want to install these Fail2Ban? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Installing..."
@@ -54,13 +54,12 @@ while true; do
     esac
 done
 
-##Removed option to install apt-listbugs and apt-listchanges
 ##Installing only created problems for DietPi tools.
 
 ##Replaced unattended-upgrades with DietPi specific tool enabled in boot config file.
 ##May require reboot to take effect
 while true; do
-    read -p "Do you want to enable automatic system updates? [Y/N] " yn
+    read -r -p "Do you want to enable automatic system updates? [Y/N] " yn
         case $yn in
         [Yy]* ) 
                 echo "Enabling automatic updates..." 
@@ -82,9 +81,9 @@ while true; do
 done
 
 ##Pointing to /bin/true disables services by not loading them in kernel (requires reboot)
-##Delete created files to restore functionality 
+##Delete created files to restore functionality (inside /etc/modprobe.d/)
 while true; do
-    read -p "Do you want to disable RDS (Reliable Datagram Sockets)? [Y/N]" yn
+    read -r -p "Do you want to disable RDS (Reliable Datagram Sockets)? [Y/N]" yn
         case $yn in
         [Yy]* ) 
                 echo "Disabling RDS..." 
@@ -100,7 +99,7 @@ while true; do
 done
 
 while true; do
-    read -p "Do you want to disable SCTP (Stream Control Transmission Protocol)? [Y/N]" yn
+    read -r -p "Do you want to disable SCTP (Stream Control Transmission Protocol)? [Y/N]" yn
         case $yn in
         [Yy]* ) 
                 echo "Disabling SCTP..." 
@@ -120,22 +119,21 @@ done
 echo "SSH can be made more secure by changing settings."
 echo "We can use keys, reconfigure features, and disable root login."
 while true; do
-    read -p "Do you have SSH keys? [Y/N] " yn
+    read -r -p "Do you have SSH keys? [Y/N] " yn
     case $yn in
         [Yy]* ) echo "Okay, let's put them to use." && break;;
 
         [Nn]* ) 
                 echo "You will need SSH keys to fully secure SSH."
                 echo "Check out SSH-Key-Builder and then run this script again (https://github.com/Trimble-tech/SSH-Key-Builder)." 
-                exit ; 
-                break;;
+                exit ;;
 
         * ) echo 'Yes or No?' ;;
     esac
 done
 
 while true; do
-    read -p "Is your server using OpenSSH or Dropbear? [O/D] " od
+    read -r -p "Is your server using OpenSSH or Dropbear? [O/D] " od
         case $od in
         [Oo]* )
 
@@ -216,24 +214,21 @@ done
 ##Mission critical systems may prefer only restarting some services like SSH instead of the whole system.
 echo "Some of these actions may require restarting services to take full effect."
 while true; do
-    read -p "Do you want to Reboot your system, go to Dietpi-services, or Nothing else? [R/D/N] " rdn
+    read -r -p "Do you want to Reboot your system, go to Dietpi-services, or Nothing else? [R/D/N] " rdn
     case $rdn in
         [Rr]* ) ##Launching dietpi-services non-interactively only works in the /boot/dietpi directory.
                 echo "Rebooting system, Goodbye!" 
                 sudo reboot 
-                exit ; 
-                break;;
+                exit ;;
         
         [Dd]* ) 
                 echo "Entering Dietpi-Services..." 
                 sudo /boot/dietpi/dietpi-services
-                exit ; 
-                break;;
+                exit ;;
 
         [Nn]* ) 
                 echo "Exiting, do not forget to reboot/restart services when possible." 
-                exit ; 
-                break;;
+                exit ;;
 
         * ) echo "R will reboot, D will go to Dietpi-services, and N will do nothing."
     esac
