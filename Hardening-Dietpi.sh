@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #   --Chris Trimble GNU GPLv3 2025--
 ##This script is written to be easy/forgiving for novices but tweakable for advanced users.
 ##For further information, refer to README.md and comments in this code
