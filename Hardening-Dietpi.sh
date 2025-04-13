@@ -6,7 +6,7 @@
 
 echo "Hello."
 echo "This script will tweak Dietpi for better security."
-echo "If you have questions, please refer to README.md.
+echo "If you have questions, please refer to README.md."
 echo "---"
 sleep 2
 ##Need to check for + remove old files if script was ran before
